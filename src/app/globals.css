@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --brand-dark:   #0D1B2A;
+  --brand-card:   #1E2D3D;
+  --brand-accent: #F5A623;
+  --brand-light:  #F8F9FA;
+  --brand-muted:  #8B9BB4;
+  --brand-border: #253548;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  background-color: #0D1B2A;
+  color: #F8F9FA;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  .font-syne { font-family: var(--font-syne), sans-serif; }
+  .font-dm   { font-family: var(--font-dm-sans), sans-serif; }
+
+  /* Mesh gradient for hero */
+  .bg-mesh {
+    background-color: #0D1B2A;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(245,166,35,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 70%, rgba(30,45,61,0.6) 0%, transparent 50%);
+  }
+
+  /* Subtle grid overlay */
+  .bg-grid {
+    background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .border-brand { border-color: #253548; }
+  .text-accent  { color: #F5A623; }
+  .bg-accent    { background-color: #F5A623; }
+  .bg-card      { background-color: #1E2D3D; }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F4F6FB;
+}
+::-webkit-scrollbar-thumb {
+  background: #1B2E5E;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #F5A623;
+}
+
+/* Section spacing */
+.section-padding {
+  padding: 100px 5%;
+}
+
+@media (max-width: 768px) {
+  .section-padding {
+    padding: 60px 5%;
+  }
+}
