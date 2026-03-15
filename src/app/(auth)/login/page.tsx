@@ -2,11 +2,10 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") ?? "/dashboard";
   const [email, setEmail] = useState("");
@@ -25,8 +24,8 @@ function LoginForm() {
         setLoading(false);
         return;
       }
-      router.push(callbackUrl);
-      router.refresh();
+      // Redirection complète pour que le cookie de session soit bien pris en compte
+      window.location.href = callbackUrl;
     } catch {
       setError("Une erreur est survenue.");
       setLoading(false);
@@ -54,7 +53,7 @@ function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           required
           className="w-full px-4 py-3 rounded-lg border border-serma-navy/20 focus:ring-2 focus:ring-serma-orange focus:border-transparent"
-          placeholder="admin@sermahub.org"
+          placeholder="admin@sermahub.com"
         />
       </div>
       <div>
