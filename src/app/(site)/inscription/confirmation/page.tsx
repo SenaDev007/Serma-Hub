@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function ConfirmationPage({
+export default async function ConfirmationPage({
   searchParams,
 }: {
   searchParams: Promise<{ ref?: string }>;
