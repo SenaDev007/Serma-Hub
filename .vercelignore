@@ -1,0 +1,14 @@
+# Dependencies (réinstallés par Vercel)
+node_modules
+.pnp
+.pnp.js
+
+# Fichiers sensibles (jamais déployés)
+.env
+.env.*
+!.env.example
+
+# Debug & local
+*.log
+npm-debug.log*
+.DS_Store

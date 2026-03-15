@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
+  // Pas de "standalone" sur Vercel (utilise son propre runtime)
+  ...(process.env.DOCKER_BUILD === "1" && { output: "standalone" }),
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },

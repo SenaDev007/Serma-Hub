@@ -63,14 +63,57 @@ Pour activer les paiements en ligne :
 2. Renseigner dans `.env.local` : `FEDAPAY_SECRET_KEY`, `FEDAPAY_PUBLIC_KEY`, `FEDAPAY_WEBHOOK_SECRET`.
 3. Configurer le webhook dans le dashboard FedaPay vers : `https://votredomaine.com/api/webhooks/fedapay`
 
+## Déploiement sur Vercel
+
+1. **Importer le projet** sur [vercel.com](https://vercel.com) (GitHub / GitLab / Bitbucket).
+
+2. **Base de données** : utiliser un PostgreSQL compatible serverless avec pooler de connexions :
+   - [Vercel Postgres](https://vercel.com/storage/postgres)
+   - [Neon](https://neon.tech) (option « connection pooling »)
+   - [Supabase](https://supabase.com)
+
+   Copier l’URL de connexion (avec paramètres de pool si proposés) dans les variables d’environnement.
+
+3. **Variables d’environnement** (à configurer dans Vercel → Project → Settings → Environment Variables) :
+
+   | Variable | Description | Exemple |
+   |----------|-------------|---------|
+   | `DATABASE_URL` | URL PostgreSQL (avec pooler pour serverless) | `postgresql://...?pgbouncer=true` |
+   | `NEXTAUTH_SECRET` | Secret pour les sessions JWT | `openssl rand -base64 32` |
+   | `NEXTAUTH_URL` | URL publique du site | `https://ton-projet.vercel.app` |
+   | `FEDAPAY_SECRET_KEY` | Clé secrète FedaPay | (optionnel) |
+   | `FEDAPAY_PUBLIC_KEY` | Clé publique FedaPay | (optionnel) |
+   | `FEDAPAY_WEBHOOK_SECRET` | Secret webhook FedaPay | (optionnel) |
+   | `RESEND_API_KEY` | Envoi d’emails | (optionnel) |
+   | `NEXT_PUBLIC_SITE_URL` | URL du site (emails, liens) | `https://ton-projet.vercel.app` |
+
+   **Important** : après le premier déploiement, mettre à jour `NEXTAUTH_URL` et `NEXT_PUBLIC_SITE_URL` avec l’URL réelle (ex. domaine personnalisé).
+
+4. **Install** : le projet utilise `installCommand: "npm install --legacy-peer-deps"` (voir `vercel.json`). Aucune action à faire côté interface si `vercel.json` est commité.
+
+5. **Migrations Prisma** : exécuter en local (ou dans un job CI) puis pousser le schéma :
+   ```bash
+   npx prisma migrate deploy
+   # ou
+   npx prisma db push
+   npm run db:seed
+   ```
+   Vercel ne lance pas les migrations automatiquement ; il faut une base déjà à jour.
+
+6. **Webhook FedaPay** : une fois le domaine en production connu, configurer l’URL du webhook dans le dashboard FedaPay : `https://ton-domaine.com/api/webhooks/fedapay`.
+
+---
+
 ## Déploiement (Docker)
 
+Pour un déploiement autonome (VPS, etc.) :
+
 ```bash
-docker build -t serma-hub .
+DOCKER_BUILD=1 docker build -t serma-hub .
 docker run -p 3000:3000 --env-file .env serma-hub
 ```
 
-Le build Next.js utilise `output: "standalone"` pour un binaire autonome.
+Avec `DOCKER_BUILD=1`, le build Next.js produit un output `standalone`.
 
 ---
 
