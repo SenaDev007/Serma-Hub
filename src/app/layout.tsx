@@ -1,60 +1,40 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Plus_Jakarta_Sans, DM_Sans, DM_Serif_Display } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
-const syne = Syne({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-syne",
+  variable: "--font-plus-jakarta",
   weight: ["400", "500", "600", "700", "800"],
-  display: "swap",
 });
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-dm-sans",
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
+  weight: ["400", "500", "600", "700"],
+});
+
+const dmSerif = DM_Serif_Display({
+  subsets: ["latin"],
+  variable: "--font-dm-serif",
+  weight: ["400"],
+  style: ["italic", "normal"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "SERMA HUB – Impact Academy | Formation Entrepreneuriale Parakou, Bénin",
-    template: "%s | SERMA HUB",
+    default: "SERMA HUB – Impact Academy | Centre de Formation Parakou Bénin",
+    template: "%s | SERMA HUB – Centre de Formation Parakou Bénin",
   },
   description:
-    "SERMA HUB forme et accompagne les jeunes et les femmes à créer des activités génératrices de revenus durables à Parakou, Bénin. 5 filières entrepreneuriales appliquées.",
-  keywords: [
-    "formation entrepreneuriale Parakou",
-    "centre formation Bénin",
-    "entrepreneur Bénin",
-    "SERMA HUB",
-    "formation professionnelle Parakou",
-    "incubateur Bénin",
-  ],
-  authors: [{ name: "SERMA HUB – Impact Academy" }],
-  creator: "SERMA HUB",
+    "Éveiller les esprits, transformer l'avenir entrepreneurial en Afrique. ENTREPRENDRE • INNOVER • IMPACTER. Centre de Formation Professionnelle Entrepreneuriale Appliquée à Parakou.",
+  keywords: ["formation entrepreneuriale", "Parakou", "Bénin", "SERMA HUB", "Impact Academy", "CFPEA"],
   openGraph: {
     type: "website",
     locale: "fr_FR",
-    url: "https://www.sermahub.com",
-    siteName: "SERMA HUB – Impact Academy",
-    title: "SERMA HUB – Impact Academy | Formation Entrepreneuriale Parakou, Bénin",
-    description:
-      "SERMA HUB forme et accompagne les jeunes et les femmes à créer des activités génératrices de revenus durables à Parakou, Bénin.",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "SERMA HUB – Impact Academy",
-    description: "Formation entrepreneuriale appliquée à Parakou, Bénin.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-    },
-  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -63,8 +43,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${syne.variable} ${dmSans.variable}`}>
-      <body className="font-dm antialiased bg-brand-dark text-brand-light">{children}</body>
+    <html lang="fr" className={`${plusJakarta.variable} ${dmSans.variable} ${dmSerif.variable}`}>
+      <body className="min-h-screen font-body bg-white text-serma-navy">
+        <a href="#main-content" className="skip-link">
+          Aller au contenu principal
+        </a>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

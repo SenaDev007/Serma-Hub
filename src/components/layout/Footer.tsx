@@ -1,112 +1,99 @@
 import Link from "next/link";
-import { GraduationCap, Instagram, Facebook, Linkedin, Mail, Phone, MapPin, Settings } from "lucide-react";
+import { Facebook, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 
-const FILIERES_LINKS = [
-  { href: "/filieres", label: "Commerce & Distribution" },
-  { href: "/filieres", label: "Agro-Business" },
-  { href: "/filieres", label: "Services Techniques" },
-  { href: "/filieres", label: "Digital Local" },
-  { href: "/filieres", label: "Entrepreneur Féminin" },
-];
-
-const NAV_LINKS = [
+const menuLinks = [
+  { href: "/filieres", label: "Filières" },
   { href: "/a-propos", label: "À propos" },
-  { href: "/impact", label: "Impact" },
-  { href: "/partenaires", label: "Partenaires" },
+  { href: "/temoignages", label: "Témoignages" },
   { href: "/contact", label: "Contact" },
 ];
 
-export default function Footer() {
+const filiereLinks = [
+  { href: "/filieres/commerce-distribution", label: "Commerce & Distribution" },
+  { href: "/filieres/agro-business", label: "Agro-Business" },
+  { href: "/filieres/services-techniques", label: "Services Techniques" },
+  { href: "/filieres/digital-local", label: "Digital Local" },
+  { href: "/filieres/entrepreneur-feminin", label: "Entrepreneur Féminin" },
+];
+
+export function Footer() {
   return (
-    <footer className="bg-[#0D1B2A] border-t border-[#253548]">
-      <div className="max-w-7xl mx-auto px-6 pt-16 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          {/* Brand */}
-          <div className="md:col-span-1">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-[#F5A623] flex items-center justify-center text-[#0D1B2A]">
-                <GraduationCap size={20} strokeWidth={2.5} />
-              </div>
-              <div>
-                <div className="font-syne font-bold text-white text-base">SERMA <span className="text-[#F5A623]">HUB</span></div>
-                <div className="text-[10px] text-[#8B9BB4] font-dm tracking-widest uppercase">Impact Academy</div>
-              </div>
-            </div>
-            <p className="text-[13px] text-[#8B9BB4] font-dm leading-relaxed mb-5">
-              Centre de Formation Entrepreneuriale Appliquée. Parakou, Bénin.
+    <footer className="bg-serma-navy text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div>
+            <Link href="/" className="font-display font-bold text-xl">
+              <span className="text-serma-orange">SERMA</span> HUB
+            </Link>
+            <p className="mt-2 text-white/80 text-sm font-accent italic">
+              ENTREPRENDRE • INNOVER • IMPACTER
             </p>
-            {/* Social */}
-            <div className="flex gap-3">
-              {[Instagram, Facebook, Linkedin].map((Icon, i) => (
-                <a key={i} href="#" className="w-9 h-9 rounded-lg bg-[#1E2D3D] border border-[#253548] flex items-center justify-center text-[#8B9BB4] hover:text-[#F5A623] hover:border-[#F5A623]/30 transition-all">
-                  <Icon size={16} />
-                </a>
-              ))}
-            </div>
+            <p className="mt-2 text-white/70 text-sm">
+              Éveiller les esprits, transformer l&apos;avenir entrepreneurial en Afrique.
+            </p>
           </div>
-
-          {/* Filières */}
           <div>
-            <h5 className="text-[11px] font-dm font-semibold text-[#F5A623] tracking-widest uppercase mb-4">Filières</h5>
-            <ul className="space-y-2.5">
-              {FILIERES_LINKS.map((link) => (
-                <li key={link.label}>
-                  <Link href={link.href} className="text-[13px] text-[#8B9BB4] font-dm hover:text-white transition-colors">
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Navigation */}
-          <div>
-            <h5 className="text-[11px] font-dm font-semibold text-[#F5A623] tracking-widest uppercase mb-4">Navigation</h5>
-            <ul className="space-y-2.5">
-              {NAV_LINKS.map((link) => (
+            <h3 className="font-display font-bold text-serma-orange mb-3">Menu</h3>
+            <ul className="space-y-2">
+              {menuLinks.map((link) => (
                 <li key={link.href}>
-                  <Link href={link.href} className="text-[13px] text-[#8B9BB4] font-dm hover:text-white transition-colors">
+                  <Link href={link.href} className="text-white/80 hover:text-serma-orange text-sm transition-colors">
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/devenir-formateur" className="text-white/80 hover:text-serma-orange text-sm transition-colors">
+                  Devenir formateur
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h3 className="font-display font-bold text-serma-orange mb-3">Filières</h3>
+            <ul className="space-y-2">
+              {filiereLinks.map((link) => (
+                <li key={link.href}>
+                  <Link href={link.href} className="text-white/80 hover:text-serma-orange text-sm transition-colors">
                     {link.label}
                   </Link>
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* Contact */}
           <div>
-            <h5 className="text-[11px] font-dm font-semibold text-[#F5A623] tracking-widest uppercase mb-4">Contact</h5>
-            <ul className="space-y-3">
-              {[
-                { icon: MapPin, text: "Quartier Albarika, Parakou" },
-                { icon: Phone, text: "+229 97 00 00 00" },
-                { icon: Mail, text: "contact@sermahub.bj" },
-              ].map((item) => (
-                <li key={item.text} className="flex items-center gap-2.5 text-[13px] text-[#8B9BB4] font-dm">
-                  <item.icon size={14} className="text-[#F5A623] flex-shrink-0" />
-                  {item.text}
-                </li>
-              ))}
-            </ul>
+            <h3 className="font-display font-bold text-serma-orange mb-3">Contact</h3>
+            <address className="not-italic text-sm text-white/80 space-y-2">
+              <p className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-serma-orange shrink-0" />
+                Parakou, Bénin
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-serma-orange shrink-0" />
+                <a href="tel:+2290140377199" className="hover:text-serma-orange transition-colors">
+                  +229 01 40 37 71 99
+                </a>
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-serma-orange shrink-0" />
+                <a href="mailto:contact@sermahub.bj" className="hover:text-serma-orange transition-colors">
+                  contact@sermahub.bj
+                </a>
+              </p>
+            </address>
+            <div className="flex gap-3 mt-4">
+              <a href="#" className="text-white/70 hover:text-serma-orange transition-colors" aria-label="Facebook">
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a href="#" className="text-white/70 hover:text-serma-orange transition-colors" aria-label="LinkedIn">
+                <Linkedin className="w-5 h-5" />
+              </a>
+            </div>
           </div>
         </div>
-
-        {/* Bottom */}
-        <div className="border-t border-[#253548] pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-[12px] text-[#8B9BB4] font-dm">
-            © {new Date().getFullYear()} SERMA HUB – Impact Academy. Tous droits réservés.
-          </p>
-          <div className="flex items-center gap-6">
-            <Link href="/confidentialite" className="text-[12px] text-[#8B9BB4] font-dm hover:text-white transition-colors">
-              Confidentialité
-            </Link>
-            <Link href="/cgv" className="text-[12px] text-[#8B9BB4] font-dm hover:text-white transition-colors">
-              CGV
-            </Link>
-            <Link href="/admin" className="flex items-center gap-1.5 text-[11px] text-[#8B9BB4]/40 font-dm hover:text-[#F5A623] transition-colors">
-              <Settings size={12} /> Admin
-            </Link>
-          </div>
+        <div className="mt-10 pt-8 border-t border-white/20 text-center text-white/60 text-sm">
+          <p>Site conçu par YEHI OR Tech – Parakou</p>
+          <p className="mt-1">© {new Date().getFullYear()} SERMA HUB – Impact Academy. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

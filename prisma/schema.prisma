@@ -7,88 +7,352 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Filiere {
-  id          Int          @id @default(autoincrement())
-  nom         String
-  description String
-  iconSlug    String       @map("icone_slug")
-  dureeMois   Int          @map("duree_mois")
-  actif       Boolean      @default(true)
-  createdAt   DateTime     @default(now()) @map("created_at")
-  apprenants  Apprenant[]
-
-  @@map("filieres")
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  password          String
+  nom               String
+  prenom            String
+  telephone         String?
+  role              Role      @default(APPRENANT)
+  avatar            String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  apprenantProfil   ApprenantProfil?
+  formateurProfil   FormateurProfil?
+  sessions          Session[]
+  inscriptions      Inscription[]
 }
 
-model Apprenant {
-  id               Int        @id @default(autoincrement())
-  nom              String
-  prenom           String
-  email            String?
-  telephone        String
-  filiereId        Int        @map("filiere_id")
-  filiere          Filiere    @relation(fields: [filiereId], references: [id])
-  statut           String     @default("en_attente")
-  dateInscription  DateTime   @map("date_inscription") @default(now())
-  createdAt        DateTime   @default(now()) @map("created_at")
-  paiements        Paiement[]
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  FORMATEUR
+  APPRENANT
+}
 
-  @@map("apprenants")
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  expires      DateTime
+}
+
+model ApprenantProfil {
+  id            String            @id @default(cuid())
+  userId        String            @unique
+  user          User              @relation(fields: [userId], references: [id])
+  dateNaissance DateTime?
+  genre         Genre?
+  commune       String?
+  niveauEtudes  String?
+  situationPro  String?
+  objectif      String?
+  photo         String?
+  statut        StatutApprenant   @default(PROSPECT)
+  createdAt     DateTime         @default(now())
+  inscriptions  Inscription[]
+  documents     Document[]
+  paiements     Paiement[]
+  progression   Progression[]
+}
+
+enum Genre {
+  MASCULIN
+  FEMININ
+  AUTRE
+}
+
+enum StatutApprenant {
+  PROSPECT
+  INSCRIT
+  EN_FORMATION
+  DIPLOME
+  ABANDONNE
+}
+
+model Document {
+  id            String         @id @default(cuid())
+  apprenantId   String
+  apprenant     ApprenantProfil @relation(fields: [apprenantId], references: [id])
+  type          String
+  url           String
+  nomFichier    String?
+  createdAt     DateTime      @default(now())
+}
+
+model Filiere {
+  id            String    @id @default(cuid())
+  slug          String    @unique
+  nom           String
+  description   String    @db.Text
+  couleur       String
+  icone         String
+  duree         String
+  tarif         Float
+  objectifs     String[]
+  actif         Boolean   @default(true)
+  ordre         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  modules       Module[]
+  vagues        Vague[]
+  inscriptions  Inscription[]
+}
+
+model Module {
+  id          String      @id @default(cuid())
+  filiereId   String
+  filiere     Filiere     @relation(fields: [filiereId], references: [id])
+  titre       String
+  description String     @db.Text
+  dureeHeures Float
+  ordre       Int
+  contenu     String?     @db.Text
+  ressources  Ressource[]
+  progressions Progression[]
+}
+
+model Ressource {
+  id        String       @id @default(cuid())
+  moduleId  String
+  module    Module       @relation(fields: [moduleId], references: [id])
+  titre     String
+  type      TypeRessource
+  url       String
+  taille    String?
+  createdAt DateTime    @default(now())
+}
+
+enum TypeRessource {
+  PDF
+  VIDEO
+  LIEN
+  EXERCICE
+}
+
+model Vague {
+  id              String        @id @default(cuid())
+  filiereId       String
+  filiere         Filiere       @relation(fields: [filiereId], references: [id])
+  nom             String
+  code            String        @unique
+  dateDebut       DateTime
+  dateFin         DateTime
+  capaciteMax     Int           @default(20)
+  statut          StatutVague  @default(PLANIFIEE)
+  lieu            String?
+  description     String?      @db.Text
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  inscriptions    Inscription[]
+  affectations    AffectationFormateur[]
+}
+
+enum StatutVague {
+  PLANIFIEE
+  EN_COURS
+  TERMINEE
+  ANNULEE
+  ARCHIVEE
+}
+
+model Inscription {
+  id              String              @id @default(cuid())
+  apprenantId     String
+  apprenant       ApprenantProfil     @relation(fields: [apprenantId], references: [id])
+  userId          String
+  user            User                @relation(fields: [userId], references: [id])
+  filiereId       String
+  filiere         Filiere             @relation(fields: [filiereId], references: [id])
+  vagueId         String?
+  vague           Vague?              @relation(fields: [vagueId], references: [id])
+  statut          StatutInscription  @default(EN_ATTENTE)
+  dateInscription DateTime           @default(now())
+  montantTotal    Float
+  montantPaye     Float              @default(0)
+  paiements       Paiement[]
+  notes           String?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+enum StatutInscription {
+  EN_ATTENTE
+  CONFIRMEE
+  EN_COURS
+  TERMINEE
+  ANNULEE
 }
 
 model Paiement {
-  id           Int       @id @default(autoincrement())
-  apprenantId  Int       @map("apprenant_id")
-  apprenant    Apprenant @relation(fields: [apprenantId], references: [id])
-  montant      Int
-  datePaiement DateTime  @map("date_paiement") @default(now())
-  methode      String    @default("mobile_money")
-  statut       String    @default("paye")
-  createdAt    DateTime  @default(now()) @map("created_at")
-
-  @@map("paiements")
+  id            String         @id @default(cuid())
+  inscriptionId String
+  inscription   Inscription   @relation(fields: [inscriptionId], references: [id])
+  apprenantId   String
+  apprenant     ApprenantProfil @relation(fields: [apprenantId], references: [id])
+  montant       Float
+  devise        String        @default("XOF")
+  statut        StatutPaiement @default(EN_ATTENTE)
+  methode       String?
+  fedapayId     String?       @unique
+  fedapayToken  String?
+  reference     String        @unique @default(cuid())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
-model Message {
-  id        Int      @id @default(autoincrement())
+enum StatutPaiement {
+  EN_ATTENTE
+  INITIE
+  EN_COURS
+  COMPLETE
+  ECHOUE
+  REMBOURSE
+}
+
+model Progression {
+  id            String         @id @default(cuid())
+  apprenantId   String
+  apprenant     ApprenantProfil @relation(fields: [apprenantId], references: [id])
+  moduleId      String
+  module        Module        @relation(fields: [moduleId], references: [id])
+  complete      Boolean       @default(false)
+  noteObtenue   Float?
+  dateComplete  DateTime?
+  createdAt     DateTime      @default(now())
+}
+
+model FormateurProfil {
+  id              String                 @id @default(cuid())
+  userId          String                 @unique
+  user            User                   @relation(fields: [userId], references: [id])
+  specialite      String
+  bio             String?                @db.Text
+  photo           String?
+  linkedin        String?
+  actif           Boolean                @default(true)
+  disponible      Boolean                @default(true)
+  tarifHoraire    Float?
+  notesMoyenne    Float?                @default(0)
+  totalVagues     Int                    @default(0)
+  affectations    AffectationFormateur[]
+}
+
+model AffectationFormateur {
+  id            String             @id @default(cuid())
+  formateurId   String
+  formateur     FormateurProfil    @relation(fields: [formateurId], references: [id])
+  vagueId       String
+  vague         Vague              @relation(fields: [vagueId], references: [id])
+  moduleIds     String[]
+  honoraires    Float?
+  statut        StatutAffectation  @default(PROPOSE)
+  notes         String?            @db.Text
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@unique([formateurId, vagueId])
+}
+
+enum StatutAffectation {
+  PROPOSE
+  CONFIRME
+  REFUSE
+  REMPLACE
+}
+
+model CandidatureFormateur {
+  id                  String             @id @default(cuid())
+  nom                 String
+  prenom              String
+  email               String
+  telephone           String
+  genre               Genre
+  dateNaissance       DateTime?
+  commune             String
+  niveauEtudes        String
+  diplomeObtenu       String
+  anneeExperience     Int
+  domaineExpertise    String[]
+  filieresCibles      String[]
+  lettreMotivation    String             @db.Text
+  disponibilite       String
+  pretentionSalaire   Float?
+  cvUrl               String?
+  diplomesUrl         String[]
+  portfolioUrl        String?
+  autresDocsUrl       String[]
+  statut              StatutCandidature  @default(RECUE)
+  scoreEvaluation     Int?
+  notesAdmin          String?            @db.Text
+  etapeActuelle       EtapeCandidature   @default(EXAMEN_DOSSIER)
+  dateEntretien       DateTime?
+  entretienNotes      String?            @db.Text
+  decisionFinale      String?            @db.Text
+  convertiEnFormateur Boolean            @default(false)
+  formateurProfilId   String?
+  numeroDossier       String?            @unique
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+}
+
+enum StatutCandidature {
+  RECUE
+  EN_EXAMEN
+  SHORTLISTEE
+  ENTRETIEN_PLANIFIE
+  ENTRETIEN_EFFECTUE
+  ACCEPTEE
+  REFUSEE
+  EN_ATTENTE_DOCS
+}
+
+enum EtapeCandidature {
+  EXAMEN_DOSSIER
+  TEST_COMPETENCES
+  ENTRETIEN_RH
+  ENTRETIEN_PEDAGOGIQUE
+  DECISION_FINALE
+}
+
+model Article {
+  id              String    @id @default(cuid())
+  slug            String    @unique
+  titre           String
+  extrait         String
+  contenu         String    @db.Text
+  image           String?
+  categorie        String
+  publie          Boolean   @default(false)
+  datePublication DateTime?
+  auteur          String
+  tags            String[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Temoignage {
+  id            String   @id @default(cuid())
+  nom           String
+  prenom        String
+  photo         String?
+  filiere       String
+  promotion     String?
+  texte         String   @db.Text
+  noteEtoiles   Int      @default(5)
+  resultat      String?
+  publie        Boolean  @default(false)
+  createdAt     DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
   nom       String
-  email     String?
+  email     String
   telephone String?
-  sujet     String?
-  contenu   String
-  lu        Boolean  @default(false)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  @@map("messages")
-}
-
-model Stat {
-  id        Int      @id @default(autoincrement())
-  cle       String   @unique
-  valeur    String
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  @@map("stats")
-}
-
-model Partenaire {
-  id       Int     @id @default(autoincrement())
-  nom      String
-  logoUrl  String? @map("logo_url")
-  siteUrl  String? @map("site_url")
-  actif    Boolean @default(true)
-
-  @@map("partenaires")
-}
-
-model MembreEquipe {
-  id          Int    @id @default(autoincrement())
-  prenom      String
-  nom         String
-  role        String
-  description String
-  initiales   String
-  actif       Boolean @default(true)
-
-  @@map("equipe")
+  sujet     String
+  message   String  @db.Text
+  traite    Boolean @default(false)
+  createdAt DateTime @default(now())
 }

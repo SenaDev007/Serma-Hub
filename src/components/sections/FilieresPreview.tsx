@@ -1,95 +1,77 @@
-import Link from "next/link";
-import { ArrowRight, BookOpen, ShoppingCart, Sprout, Wrench, Smartphone, Star, Clock } from "lucide-react";
-import { prisma } from "@/lib/prisma";
+"use client";
 
-const ICON_MAP: Record<string, React.ElementType> = {
-  ShoppingCart, Sprout, Wrench, Smartphone, Star, BookOpen,
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import type { Filiere } from "@prisma/client";
+
+const filiereColors: Record<string, string> = {
+  "commerce-distribution": "bg-filiere-commerce",
+  "agro-business": "bg-filiere-agro",
+  "services-techniques": "bg-filiere-tech",
+  "digital-local": "bg-filiere-digital",
+  "entrepreneur-feminin": "bg-filiere-feminin",
 };
 
-async function getFilieres() {
-  try {
-    const filieres = await prisma.filiere.findMany({
-      where: { actif: true },
-      include: { _count: { select: { apprenants: true } } },
-      orderBy: { id: "asc" },
-    });
-    return filieres;
-  } catch {
-    return [];
-  }
-}
-
-export default async function FilieresPreview() {
-  const filieres = await getFilieres();
-
+export function FilieresPreview({ filieres }: { filieres: Filiere[] }) {
   return (
-    <section id="filieres" className="py-24 px-6 bg-[#0D1B2A]">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-14">
-          <p className="text-[11px] font-dm font-semibold tracking-[0.18em] uppercase text-[#F5A623] mb-3">
-            Nos formations
+    <section className="py-20 bg-serma-light">
+      <div className="container mx-auto px-4">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <h2 className="font-display font-bold text-3xl md:text-4xl text-serma-navy">
+            Les 5 filières
+          </h2>
+          <p className="mt-3 text-serma-blue/80 max-w-2xl mx-auto">
+            Choisis la formation qui correspond à ton projet entrepreneurial.
           </p>
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 className="font-syne font-bold text-white leading-tight" style={{ fontSize: "clamp(28px,4vw,44px)" }}>
-              <BookOpen size={32} className="inline text-[#F5A623] mr-3 mb-1" />
-              {filieres.length || 5} filières pour{" "}
-              <span className="text-[#F5A623]">entreprendre</span>
-            </h2>
-            <p className="text-[15px] text-[#8B9BB4] max-w-sm font-dm leading-relaxed">
-              Chaque filière est conçue pour le marché local. Tu sors avec un projet testé et de vrais clients.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {filieres.map((f, i) => {
-            const Icon = ICON_MAP[f.iconSlug] ?? BookOpen;
-            return (
-              <div
-                key={f.id}
-                className="bg-[#1E2D3D] border border-[#253548] rounded-2xl p-7 hover:-translate-y-1 hover:border-[#F5A623]/30 hover:shadow-card transition-all duration-200 group flex flex-col"
-              >
-                {/* Icon + badge */}
-                <div className="flex items-start justify-between mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-[#F5A623]/10 flex items-center justify-center group-hover:bg-[#F5A623]/20 transition-colors">
-                    <Icon size={22} className="text-[#F5A623]" />
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-[#0D1B2A] px-3 py-1 rounded-full">
-                    <Clock size={11} className="text-[#8B9BB4]" />
-                    <span className="text-[11px] text-[#8B9BB4] font-dm">{f.dureeMois} mois</span>
-                  </div>
+        </motion.div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filieres.slice(0, 5).map((f, i) => (
+            <motion.div
+              key={f.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(10, 35, 66, 0.15)" }}
+              className={`rounded-2xl overflow-hidden border-l-4 ${filiereColors[f.slug] || "bg-serma-blue"} border-serma-navy/20 bg-white shadow-md`}
+            >
+              <div className="p-6">
+                <div className={`inline-block px-3 py-1 rounded-full text-white text-sm font-medium ${filiereColors[f.slug] || "bg-serma-blue"}`}>
+                  {f.nom}
                 </div>
-
-                <h3 className="font-syne font-bold text-white text-[18px] mb-2">{f.nom}</h3>
-                <p className="text-[14px] text-[#8B9BB4] leading-relaxed mb-6 flex-1 font-dm">
-                  {f.description.substring(0, 120)}…
-                </p>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-[#253548]">
-                  <span className="text-[12px] font-dm text-[#8B9BB4]">
-                    {f._count.apprenants} inscrits
-                  </span>
-                  <Link
-                    href={`/filieres/${f.id}`}
-                    className="inline-flex items-center gap-1.5 text-[#F5A623] text-[13px] font-dm font-medium hover:gap-2.5 transition-all duration-150"
-                  >
-                    Découvrir <ArrowRight size={14} />
-                  </Link>
-                </div>
+                <p className="mt-3 text-serma-navy/90 text-sm line-clamp-2">{f.description}</p>
+                <Link
+                  href={`/filieres/${f.slug}`}
+                  className="mt-4 inline-flex items-center gap-2 text-serma-orange font-display font-bold text-sm hover:gap-3 transition-all"
+                >
+                  En savoir plus
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
               </div>
-            );
-          })}
-        </div>
-
-        <div className="text-center mt-12">
-          <Link
-            href="/filieres"
-            className="inline-flex items-center gap-2 border border-[#253548] text-[#F8F9FA] px-8 py-4 rounded-xl font-dm font-medium text-sm hover:border-[#F5A623]/40 hover:bg-[#1E2D3D] transition-all duration-200"
+            </motion.div>
+          ))}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="rounded-2xl bg-serma-navy p-6 flex flex-col justify-center items-center text-center"
           >
-            Voir toutes les filières <ArrowRight size={16} />
-          </Link>
+            <p className="text-white/90 font-display font-bold mb-2">Tu hésites ?</p>
+            <p className="text-white/70 text-sm mb-4">Découvre toutes nos filières et trouve ta voie.</p>
+            <Link
+              href="/filieres"
+              className="inline-flex items-center gap-2 bg-serma-orange text-serma-navy font-display font-bold px-6 py-3 rounded-lg hover:bg-serma-orange/90 transition-colors"
+            >
+              Voir toutes les filières
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </motion.div>
         </div>
       </div>
     </section>

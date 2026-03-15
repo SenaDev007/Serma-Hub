@@ -1,104 +1,142 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { GraduationCap, Menu, X, ArrowRight } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const NAV_LINKS = [
+const navLinks = [
   { href: "/filieres", label: "Filières" },
-  { href: "/#parcours", label: "Parcours" },
-  { href: "/impact", label: "Impact" },
-  { href: "/partenaires", label: "Partenaires" },
+  { href: "/a-propos", label: "À propos" },
+  { href: "/temoignages", label: "Témoignages" },
+  { href: "/blog", label: "Blog" },
+  { href: "/contact", label: "Contact" },
 ];
 
-export default function Navbar() {
+export function Navbar() {
+  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [rejoindreOpen, setRejoindreOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-[#0D1B2A]/95 backdrop-blur-xl border-b border-[#253548]"
-          : "bg-transparent"
-      }`}
+      className={cn(
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
+        "bg-serma-navy/95 backdrop-blur",
+        scrolled && "shadow-lg"
+      )}
     >
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between" style={{ height: "72px" }}>
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-9 h-9 rounded-xl bg-[#F5A623] flex items-center justify-center text-[#0D1B2A] group-hover:scale-105 transition-transform">
-            <GraduationCap size={20} strokeWidth={2.5} />
-          </div>
-          <div className="leading-tight">
-            <div className="font-syne font-bold text-base text-white tracking-tight">
-              SERMA <span className="text-[#F5A623]">HUB</span>
-            </div>
-            <div className="text-[10px] text-[#8B9BB4] font-dm tracking-widest uppercase">
-              Impact Academy
-            </div>
-          </div>
+      <nav className="container mx-auto px-4 h-16 flex items-center justify-between" aria-label="Navigation principale">
+        <Link href="/" className="font-display font-bold text-xl text-white flex items-center gap-2" onClick={() => setOpen(false)}>
+          <span className="text-serma-orange">SERMA</span> HUB
         </Link>
 
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_LINKS.map((link) => (
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="px-4 py-2 rounded-lg text-sm font-dm font-medium text-[#8B9BB4] hover:text-white hover:bg-[#1E2D3D] transition-all duration-150"
+              className="text-white/90 hover:text-serma-orange transition-colors text-sm font-medium"
             >
               {link.label}
             </Link>
           ))}
-        </nav>
-
-        {/* CTA + Mobile toggle */}
-        <div className="flex items-center gap-3">
+          <div className="relative">
+            <button
+              onClick={() => setRejoindreOpen(!rejoindreOpen)}
+              className="flex items-center gap-1 text-white/90 hover:text-serma-orange transition-colors text-sm font-medium"
+              aria-expanded={rejoindreOpen}
+              aria-haspopup="true"
+            >
+              Rejoindre SERMA HUB
+              <ChevronDown className="w-4 h-4" />
+            </button>
+            <AnimatePresence>
+              {rejoindreOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  className="absolute top-full right-0 mt-2 py-2 w-48 bg-serma-navy rounded-lg shadow-xl border border-white/10"
+                >
+                  <Link
+                    href="/inscription"
+                    className="block px-4 py-2 text-white hover:bg-white/10 text-sm"
+                    onClick={() => setRejoindreOpen(false)}
+                  >
+                    S&apos;inscrire comme apprenant
+                  </Link>
+                  <Link
+                    href="/devenir-formateur"
+                    className="block px-4 py-2 text-white hover:bg-white/10 text-sm"
+                    onClick={() => setRejoindreOpen(false)}
+                  >
+                    Devenir formateur
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
           <Link
-            href="/contact"
-            className="hidden md:inline-flex items-center gap-2 bg-[#F5A623] text-[#0D1B2A] font-syne font-bold text-sm px-5 py-2.5 rounded-xl hover:bg-[#e09620] transition-colors shadow-accent group"
+            href="/inscription"
+            className="bg-serma-orange text-serma-navy font-display font-bold px-5 py-2.5 rounded-lg hover:bg-serma-orange/90 transition-colors"
           >
             S&apos;inscrire
-            <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
           </Link>
-          <button
-            className="md:hidden p-2 rounded-lg text-[#8B9BB4] hover:text-white hover:bg-[#1E2D3D] transition-all"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
         </div>
-      </div>
 
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden bg-[#0D1B2A] border-t border-[#253548] px-6 py-5 space-y-1">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className="block py-3 text-sm font-dm text-[#8B9BB4] hover:text-white transition-colors"
-            >
-              {link.label}
-            </Link>
-          ))}
-          <Link
-            href="/contact"
-            onClick={() => setMenuOpen(false)}
-            className="flex items-center justify-center gap-2 mt-4 bg-[#F5A623] text-[#0D1B2A] font-syne font-bold text-sm px-5 py-3 rounded-xl"
+        <button
+          className="md:hidden p-2 text-white"
+          onClick={() => setOpen(!open)}
+          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+        >
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </nav>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-serma-navy border-t border-white/10"
           >
-            S&apos;inscrire <ArrowRight size={15} />
-          </Link>
-        </div>
-      )}
+            <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="py-2 text-white hover:text-serma-orange"
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+              <Link href="/inscription" className="py-2 text-serma-orange font-medium" onClick={() => setOpen(false)}>
+                S&apos;inscrire comme apprenant
+              </Link>
+              <Link href="/devenir-formateur" className="py-2 text-white" onClick={() => setOpen(false)}>
+                Devenir formateur
+              </Link>
+              <Link
+                href="/inscription"
+                className="mt-2 bg-serma-orange text-serma-navy font-bold py-3 rounded-lg text-center"
+                onClick={() => setOpen(false)}
+              >
+                S&apos;inscrire maintenant
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
