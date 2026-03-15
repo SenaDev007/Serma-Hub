@@ -27,7 +27,7 @@ export default async function InscriptionPage({
   return (
     <div className="py-16">
       <div className="container mx-auto px-4 max-w-2xl">
-        <h1 className="font-display font-bold text-3xl text-serma-navy text-center">
+        <h1 className="font-display font-bold text-2xl sm:text-3xl text-serma-navy text-center">
           Inscription à une formation
         </h1>
         <p className="mt-2 text-serma-blue/80 text-center">

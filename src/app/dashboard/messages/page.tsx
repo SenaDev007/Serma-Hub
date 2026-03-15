@@ -9,12 +9,12 @@ export default async function MessagesPage() {
 
   return (
     <div>
-      <h1 className="font-display font-bold text-2xl text-serma-navy mb-8">
+      <h1 className="font-display font-bold text-xl sm:text-2xl text-serma-navy mb-6 sm:mb-8">
         Messages
       </h1>
       <div className="bg-white rounded-xl shadow border border-serma-navy/5 overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[32rem]">
             <thead>
               <tr className="border-b border-serma-navy/10 bg-serma-light/50">
                 <th className="text-left p-4 text-sm font-medium text-serma-blue/80">Nom</th>

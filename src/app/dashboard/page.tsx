@@ -41,7 +41,7 @@ export default async function DashboardPage() {
 
   return (
     <div>
-      <h1 className="font-display font-bold text-2xl text-serma-navy mb-8">
+      <h1 className="font-display font-bold text-xl sm:text-2xl text-serma-navy mb-6 sm:mb-8">
         Tableau de bord
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
@@ -66,7 +66,7 @@ export default async function DashboardPage() {
           Dernières inscriptions
         </h2>
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full min-w-[32rem]">
             <thead>
               <tr className="border-b border-serma-navy/10">
                 <th className="text-left p-4 text-sm font-medium text-serma-blue/80">Apprenant</th>

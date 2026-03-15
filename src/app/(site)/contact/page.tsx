@@ -10,7 +10,7 @@ export default function ContactPage() {
     <div className="py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto">
-          <h1 className="font-display font-bold text-4xl text-serma-navy text-center">
+          <h1 className="font-display font-bold text-3xl sm:text-4xl text-serma-navy text-center">
             Contact
           </h1>
           <p className="mt-4 text-serma-blue/80 text-center">
