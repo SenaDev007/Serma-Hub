@@ -1,10 +1,16 @@
-import NextAuth from "next-auth";
+import NextAuth, { type DefaultSession } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { prisma } from "./prisma";
 import bcrypt from "bcryptjs";
 import type { Role } from "@prisma/client";
 
 declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      role: Role;
+    } & DefaultSession["user"];
+  }
   interface User {
     id: string;
     email: string;
@@ -12,12 +18,9 @@ declare module "next-auth" {
     prenom: string;
     role: Role;
   }
-  interface Session {
-    user: User & { role: Role };
-  }
 }
 
-declare module "@auth/core/jwt" {
+declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: Role;
