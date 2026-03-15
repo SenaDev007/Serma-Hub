@@ -24,8 +24,8 @@ const dmSerif = DM_Serif_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "SERMA HUB – Impact Academy | Centre de Formation Parakou Bénin",
-    template: "%s | SERMA HUB – Centre de Formation Parakou Bénin",
+    default: "SERMA HUB – Impact Academy | CFPEA",
+    template: "%s | SERMA HUB – Centre de Formation Professionnelle et Entrepreneuriale Appliquée - Parakou Bénin",
   },
   description:
     "Éveiller les esprits, transformer l'avenir entrepreneurial en Afrique. ENTREPRENDRE • INNOVER • IMPACTER. Centre de Formation Professionnelle Entrepreneuriale Appliquée à Parakou.",

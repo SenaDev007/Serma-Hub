@@ -8,57 +8,104 @@ const blocks = [
     title: "Business First",
     description: "Chaque formation est conçue pour que tu sortes avec un projet testé et des premiers revenus.",
     icon: Briefcase,
-    side: "left",
+    accent: "serma-orange",
   },
   {
     title: "Accompagnement inclus",
     description: "Mentorat, suivi terrain et réseau alumni pour ne pas rester seul après la formation.",
     icon: Users,
-    side: "right",
+    accent: "serma-teal",
   },
   {
     title: "Réseau Alumni actif",
     description: "Rejoins une communauté d'entrepreneurs qui s'entraident et partagent des opportunités.",
     icon: Sparkles,
-    side: "left",
+    accent: "serma-blue",
   },
 ];
 
+const accentBg: Record<string, string> = {
+  "serma-orange": "bg-serma-orange/10",
+  "serma-teal": "bg-serma-teal/10",
+  "serma-blue": "bg-serma-blue/10",
+};
+
+const accentIcon: Record<string, string> = {
+  "serma-orange": "text-serma-orange",
+  "serma-teal": "text-serma-teal",
+  "serma-blue": "text-serma-blue",
+};
+
 export function Difference() {
   return (
-    <section className="py-20 bg-serma-light">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
+    <section className="py-24 md:py-32 bg-serma-light relative overflow-hidden">
+      {/* Fond décoratif discret */}
+      <div
+        className="absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 20% 50%, var(--serma-navy) 1px, transparent 1px),
+                           radial-gradient(circle at 80% 50%, var(--serma-navy) 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}
+        aria-hidden
+      />
+      <div className="container mx-auto px-4 relative z-10">
+        <motion.header
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          transition={{ duration: 0.5 }}
+          className="text-center max-w-3xl mx-auto mb-16 md:mb-20"
         >
-          <h2 className="font-display font-bold text-3xl md:text-4xl text-serma-navy">
+          <p className="text-serma-orange font-display font-bold text-sm uppercase tracking-widest mb-3">
+            Notre différence
+          </p>
+          <h2 className="font-display font-bold text-3xl sm:text-4xl md:text-5xl text-serma-navy leading-tight">
             Pourquoi SERMA HUB ?
           </h2>
-          <p className="mt-3 text-serma-blue/80 max-w-2xl mx-auto">
-            Pas un cours. Une entreprise.
+          <p className="mt-4 text-lg text-serma-blue/80 font-body">
+            Pas un cours. <span className="font-accent italic text-serma-navy">Une entreprise.</span>
           </p>
-        </motion.div>
-        <div className="space-y-0">
+        </motion.header>
+
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
           {blocks.map((block, i) => (
-            <motion.div
+            <motion.article
               key={block.title}
-              initial={{ opacity: 0, x: block.side === "left" ? -24 : 24 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className={`flex flex-col md:flex-row gap-8 items-center py-12 ${i % 2 === 1 ? "md:flex-row-reverse" : ""}`}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              whileHover={{ y: -6 }}
+              className="group relative bg-white rounded-2xl p-8 shadow-sm border border-serma-navy/5
+                         hover:shadow-xl hover:border-serma-navy/10 transition-all duration-300"
             >
-              <div className={`flex-1 ${i % 2 === 1 ? "md:text-right" : ""}`}>
-                <div className={`inline-flex p-4 rounded-xl bg-serma-orange/10 text-serma-orange ${i % 2 === 1 ? "md:ml-auto" : ""}`}>
-                  <block.icon className="w-8 h-8" />
+              {/* Ligne d'accent en haut */}
+              <div
+                className={`absolute top-0 left-0 right-0 h-1 rounded-t-2xl ${
+                  block.accent === "serma-orange"
+                    ? "bg-serma-orange"
+                    : block.accent === "serma-teal"
+                    ? "bg-serma-teal"
+                    : "bg-serma-blue"
+                }`}
+                aria-hidden
+              />
+              <div className="flex flex-col h-full">
+                <div
+                  className={`inline-flex w-14 h-14 items-center justify-center rounded-2xl ${accentBg[block.accent]} ${accentIcon[block.accent]} mb-6
+                             group-hover:scale-110 transition-transform duration-300`}
+                >
+                  <block.icon className="w-7 h-7" strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-4 font-display font-bold text-xl text-serma-navy">{block.title}</h3>
-                <p className="mt-2 text-serma-blue/80">{block.description}</p>
+                <h3 className="font-display font-bold text-xl text-serma-navy">
+                  {block.title}
+                </h3>
+                <p className="mt-3 text-serma-blue/80 leading-relaxed flex-1">
+                  {block.description}
+                </p>
               </div>
-              <div className={`flex-1 border-l-4 border-serma-orange bg-white p-6 rounded-r-xl shadow-sm min-h-[120px] ${i % 2 === 1 ? "border-l-0 border-r-4 md:rounded-l-xl md:rounded-r-none" : ""}`} />
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       </div>

@@ -47,6 +47,11 @@ export function Footer() {
                   Devenir formateur
                 </Link>
               </li>
+              <li>
+                <Link href="/dashboard" className="text-white/80 hover:text-serma-orange text-sm transition-colors">
+                  Backoffice
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

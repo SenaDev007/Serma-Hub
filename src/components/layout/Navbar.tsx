@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/filieres", label: "Filières" },
-  { href: "/a-propos", label: "À propos" },
   { href: "/temoignages", label: "Témoignages" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
+  { href: "/a-propos", label: "À propos" },
 ];
 
 export function Navbar() {
@@ -85,6 +85,12 @@ export function Navbar() {
             </AnimatePresence>
           </div>
           <Link
+            href="/dashboard"
+            className="text-white/70 hover:text-serma-orange transition-colors text-sm"
+          >
+            Backoffice
+          </Link>
+          <Link
             href="/inscription"
             className="bg-serma-orange text-serma-navy font-display font-bold px-5 py-2.5 rounded-lg hover:bg-serma-orange/90 transition-colors"
           >
@@ -125,6 +131,9 @@ export function Navbar() {
               </Link>
               <Link href="/devenir-formateur" className="py-2 text-white" onClick={() => setOpen(false)}>
                 Devenir formateur
+              </Link>
+              <Link href="/dashboard" className="py-2 text-white/70" onClick={() => setOpen(false)}>
+                Backoffice
               </Link>
               <Link
                 href="/inscription"

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { FiliereHeroBackground } from "@/components/filieres/FiliereHeroBackground";
 import { formatFCFA } from "@/lib/utils";
 import {
   Accordion,
@@ -46,10 +47,13 @@ export default async function FilierePage({
 
   const colorClass = filiereColors[filiere.slug] || "bg-serma-blue";
 
+  const filiereImageSrc = `/images/filieres/${filiere.slug}.jpg`;
+
   return (
     <div>
-      <section className={`${colorClass} py-16 text-white`}>
-        <div className="container mx-auto px-4">
+      <section className="relative py-16 md:py-20 text-white overflow-hidden">
+        <FiliereHeroBackground imageSrc={filiereImageSrc} colorClass={colorClass} />
+        <div className="container mx-auto px-4 relative z-10">
           <nav className="text-white/80 text-sm mb-6">
             <Link href="/" className="hover:text-white">Accueil</Link>
             <span className="mx-2">/</span>

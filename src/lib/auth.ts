@@ -28,6 +28,7 @@ declare module "next-auth/jwt" {
 }
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET ?? (process.env.NODE_ENV === "development" ? "serma-hub-dev-secret-do-not-use-in-production" : undefined),
   providers: [
     Credentials({
       name: "credentials",
