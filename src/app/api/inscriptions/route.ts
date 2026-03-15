@@ -9,8 +9,12 @@ export async function POST(request: Request) {
     const step1 = step1Schema.safeParse(body);
     const step2 = step2Schema.safeParse(body);
     if (!step1.success || !step2.success) {
+      const errors = {
+        ...(step1.success ? {} : step1.error.flatten()),
+        ...(step2.success ? {} : step2.error.flatten()),
+      };
       return NextResponse.json(
-        { message: "Données invalides", errors: { ...step1.error.flatten(), ...step2.error.flatten() } },
+        { message: "Données invalides", errors },
         { status: 400 }
       );
     }
